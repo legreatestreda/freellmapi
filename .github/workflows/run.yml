@@ -1,0 +1,27 @@
+name: FreeLLMAPI
+
+on:
+  workflow_dispatch:
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm install
+
+      - run: cp .env.example .env
+
+      - run: |
+          echo "ENCRYPTION_KEY=$(openssl rand -hex 32)" >> .env
+
+      - run: npm run build
+
+      - run: node server/dist/index.js
